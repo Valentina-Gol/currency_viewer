@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+httpx
+sqlalchemy
+pydantic
+sqlalchemy
+black
+xmltodict
+pytest

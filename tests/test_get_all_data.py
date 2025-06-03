@@ -1,15 +1,13 @@
 import pytest
-from httpx import AsyncClient, ASGITransport
-from app.main import app
+from httpx import AsyncClient
 
 
 @pytest.mark.asyncio
-async def test_get_first_page():
-    async with AsyncClient(
-        transport=ASGITransport(app=app),
-        base_url="http://localhost:8000",
-    ) as client:
-        response = await client.get("/all-data", params={"page": 1, "per_page": 2})
+async def test_get_first_page(async_client: AsyncClient):
+    async with async_client:
+        response = await async_client.get(
+            "/all-data", params={"page": 1, "per_page": 2}
+        )
     assert response.status_code == 200
     assert response.json() == {
         "page": 1,
@@ -23,12 +21,11 @@ async def test_get_first_page():
 
 
 @pytest.mark.asyncio
-async def test_get_last_page():
-    async with AsyncClient(
-        transport=ASGITransport(app=app),
-        base_url="http://localhost:8000",
-    ) as client:
-        response = await client.get("/all-data", params={"page": 2, "per_page": 3})
+async def test_get_last_page(async_client: AsyncClient):
+    async with async_client:
+        response = await async_client.get(
+            "/all-data", params={"page": 2, "per_page": 3}
+        )
     assert response.status_code == 200
     assert response.json() == {
         "page": 2,
@@ -39,21 +36,19 @@ async def test_get_last_page():
 
 
 @pytest.mark.asyncio
-async def test_get_extra_page():
-    async with AsyncClient(
-        transport=ASGITransport(app=app),
-        base_url="http://localhost:8000",
-    ) as client:
-        response = await client.get("/all-data", params={"page": 50, "per_page": 3})
+async def test_get_extra_page(async_client: AsyncClient):
+    async with async_client:
+        response = await async_client.get(
+            "/all-data", params={"page": 50, "per_page": 3}
+        )
     assert response.status_code == 200
     assert response.json() == {"page": 50, "per_page": 3, "total": 4, "items": []}
 
 
 @pytest.mark.asyncio
-async def test_pass_wrong_params():
-    async with AsyncClient(
-        transport=ASGITransport(app=app),
-        base_url="http://localhost:8000",
-    ) as client:
-        response = await client.get("/all-data", params={"page": -1, "per_page": 3})
+async def test_pass_wrong_params(async_client: AsyncClient):
+    async with async_client:
+        response = await async_client.get(
+            "/all-data", params={"page": -1, "per_page": 3}
+        )
     assert response.status_code == 422

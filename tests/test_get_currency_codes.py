@@ -1,16 +1,10 @@
 import pytest
-from httpx import AsyncClient, ASGITransport
-from app.main import app
+from httpx import AsyncClient
 
 
 @pytest.mark.asyncio
-async def test_get_codes():
-    # todo move AsyncClient to conftest
-    async with AsyncClient(
-        # todo move base_url to config
-        transport=ASGITransport(app=app),
-        base_url="http://localhost:8000",
-    ) as client:
-        response = await client.get("/unique-currency-codes")
+async def test_get_codes(async_client: AsyncClient):
+    async with async_client:
+        response = await async_client.get("/unique-currency-codes")
     assert response.status_code == 200
     assert response.json() == ["EUR", "GBP", "USD"]

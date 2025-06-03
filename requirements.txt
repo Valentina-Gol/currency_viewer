@@ -5,6 +5,8 @@ sqlalchemy
 pydantic
 sqlalchemy
 black
+isort
 xmltodict
 pytest
 pytest-mock
+

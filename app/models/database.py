@@ -16,5 +16,20 @@ class Currency(Base):
     rate = Column(Float)
     date = Column(Date)
 
+    def __eq__(self, other):
+        if isinstance(other, Currency):
+            return (
+                other.code == self.code
+                and other.rate == self.rate
+                and other.date == self.date
+                and other.id == self.id
+            )
+        return False
+
+    def __repr__(self):
+        if self.id:
+            return f"Currency(id={self.id}, code={self.code}, rate={self.rate}, date={self.date})"
+        return f"Currency(code={self.code}, rate={self.rate}, date={self.date})"
+
 
 Base.metadata.create_all(bind=engine)

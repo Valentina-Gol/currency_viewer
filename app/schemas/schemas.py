@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, field_validator
-from datetime import datetime
+from datetime import datetime, date
 
 
 class CurrencyCreate(BaseModel):
@@ -18,7 +18,7 @@ class Currency(BaseModel):
     id: int
     code: str
     rate: float
-    date: datetime
+    date: date
 
     class Config:
         orm_mode = True

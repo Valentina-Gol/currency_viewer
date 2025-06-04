@@ -3,8 +3,9 @@ from unittest.mock import AsyncMock
 
 import pytest
 from httpx import AsyncClient
-from models.models import Currency
 from sqlalchemy.orm import Session
+
+from app.models.models import Currency
 
 DATA = [
     Currency(id=5, code="AUD", rate=14.68, date=date(2020, 1, 1)),

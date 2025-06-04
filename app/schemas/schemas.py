@@ -1,10 +1,10 @@
 from datetime import date, datetime
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class CurrencyCreate(BaseModel):
-    date: str = Field(..., description="Date in format YYY-MM-DD")
+    date: str = Field(description="Date in format YYY-MM-DD", default="2025-07-03")
 
     @field_validator("date")
     def valid_date_format(cls, v):
@@ -17,16 +17,15 @@ class CurrencyCreate(BaseModel):
 
 class Currency(BaseModel):
     id: int
-    code: str
-    rate: float
     date: date
+    code: str = "USD"
+    rate: float = 1.0
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class PaginatedResponse(BaseModel):
-    page: int
-    per_page: int
-    total: int
+    page: int = 1
+    per_page: int = 1
+    total: int = 1
     items: list[Currency]

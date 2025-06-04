@@ -4,15 +4,15 @@ from unittest.mock import AsyncMock
 
 import pytest
 from httpx import ASGITransport, AsyncClient
-from models.database import Base
-from models.models import Currency
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
 from app.dependencies import get_db
 from app.main import app
+from app.models.database import Base
+from app.models.models import Currency
 
-DATABASE_URL = "sqlite:///memory.db"
+DATABASE_URL = "sqlite:///test.db"
 SERVICE_URL = "http://localhost:8000"
 
 engine = create_engine(DATABASE_URL)

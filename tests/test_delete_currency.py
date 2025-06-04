@@ -2,8 +2,9 @@ from datetime import date
 
 import pytest
 from httpx import AsyncClient
-from models.models import Currency
 from sqlalchemy.orm import Session
+
+from app.models.models import Currency
 
 DATA = [
     Currency(id=4, code="GBP", rate=90.0, date=date(2025, 7, 1)),
@@ -19,7 +20,7 @@ async def test_delete_currency_by_code(db_session: Session, async_client: AsyncC
         response = await async_client.delete(f"/delete-by-code/{currency_code}")
     assert response.status_code == 204
 
-    items: list[Currency] = db_session.query(Currency).order_by(Currency.code).all()
+    items = db_session.query(Currency).order_by(Currency.code).all()
     assert items == DATA
 
 

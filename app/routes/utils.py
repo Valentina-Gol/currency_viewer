@@ -1,6 +1,7 @@
-from httpx import AsyncClient
 import xmltodict
-from settings import CB_RF_URL
+from httpx import AsyncClient
+
+from app.settings import CB_RF_URL
 
 
 async def fetch_currency_rates(date: str) -> str:

@@ -195,3 +195,4 @@ cython_debug/
 
 currency.db
 memory.db
+test.db

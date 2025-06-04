@@ -1,14 +1,14 @@
 from datetime import datetime
 
 from fastapi import APIRouter, Depends, HTTPException, Query
-from models.models import Currency
-from repository.currency_repository import CurrencyRepository
-from schemas import schemas
 
 import app.routes.utils as routes_utils  # absolute import for tests
 from app.dependencies import get_currency_repository
+from app.models.models import Currency
+from app.repository.currency_repository import CurrencyRepository
+from app.schemas import schemas
 
-router = APIRouter(tags=["currencies"])
+router = APIRouter(tags=["Currencies"])
 
 
 @router.post(
@@ -100,8 +100,6 @@ async def delete_currency_by_code(
     deleted_count = repo.delete_by_code(currency_code)
     if deleted_count == 0:
         raise HTTPException(status_code=404, detail="Currency code not found")
-
-    return {"message": f"All records for {currency_code} deleted successfully"}
 
 
 @router.get(

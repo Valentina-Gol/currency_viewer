@@ -1,9 +1,10 @@
 from typing import Generator
 
 from fastapi import Depends
-from models.database import SessionLocal
-from repository.currency_repository import CurrencyRepository
 from sqlalchemy.orm import Session
+
+from app.models.database import SessionLocal
+from app.repository.currency_repository import CurrencyRepository
 
 
 def get_db() -> Generator[Session, None, None]:

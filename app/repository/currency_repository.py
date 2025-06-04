@@ -1,7 +1,8 @@
 from datetime import date
 
-from models.models import Currency
 from sqlalchemy.orm import Session
+
+from app.models.models import Currency
 
 
 class CurrencyRepository:

@@ -7,7 +7,7 @@ from httpx import ASGITransport, AsyncClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
-from app.dependencies import get_db
+from app.dependencies import get_session
 from app.main import app
 from app.models.database import Base
 from app.models.models import Currency
@@ -54,7 +54,7 @@ def db_session() -> Generator[Session, None, None]:
 
 @pytest.fixture(autouse=True)
 def override_db_dependency(db_initialization) -> Generator[None, None, None]:
-    app.dependency_overrides[get_db] = get_session
+    app.dependency_overrides[get_session] = get_session
     yield
     app.dependency_overrides.clear()
     Base.metadata.drop_all(engine)

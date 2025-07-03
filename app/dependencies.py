@@ -1,19 +1,21 @@
-from typing import Generator
+from typing import AsyncGenerator
 
 from fastapi import Depends
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.database import SessionLocal
 from app.repository.currency_repository import CurrencyRepository
 
 
-def get_db() -> Generator[Session, None, None]:
-    db = SessionLocal()
+async def get_session() -> AsyncGenerator[AsyncSession, None]:
+    session = SessionLocal()
     try:
-        yield db
+        yield session
     finally:
-        db.close()
+        await session.close()
 
 
-def get_currency_repository(db: Session = Depends(get_db)) -> CurrencyRepository:
-    return CurrencyRepository(db)
+def get_currency_repository(
+    session: AsyncSession = Depends(get_session),
+) -> CurrencyRepository:
+    return CurrencyRepository(session)

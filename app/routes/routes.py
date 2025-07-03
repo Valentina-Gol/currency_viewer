@@ -74,7 +74,7 @@ async def create_currency_rates(
 async def get_unique_currency_codes(
     repo: CurrencyRepository = Depends(get_currency_repository),
 ):
-    return repo.get_codes()
+    return await repo.get_codes()
 
 
 @router.delete(

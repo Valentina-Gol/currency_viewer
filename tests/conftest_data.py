@@ -1,28 +1,35 @@
 from datetime import date
-from typing import Generator
+from typing import Generator, AsyncGenerator
 from unittest.mock import AsyncMock
 
 import pytest
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 
-from app.dependencies import get_session
+from app.dependencies import get_session as get_session_original
 from app.main import app
 from app.models.database import Base
 from app.models.models import Currency
 
 DATABASE_URL = "sqlite:///test.db"
+ASYNC_DATABASE_URL = "sqlite+aiosqlite:///test.db"
+
 SERVICE_URL = "http://localhost:8000"
 
 engine = create_engine(DATABASE_URL)
 DBSession = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+async_engine = create_async_engine(ASYNC_DATABASE_URL)
+AsyncDBSession = async_sessionmaker(autocommit=False, autoflush=False, bind=async_engine)
 
 
 @pytest.fixture
 def db_initialization() -> None:
     Base.metadata.create_all(engine)
     session = DBSession()
+    session.begin()
     session.add_all(
         [
             Currency(code="USD", rate=65.0, date=date(2025, 7, 1)),
@@ -35,12 +42,12 @@ def db_initialization() -> None:
     session.close()
 
 
-def get_session() -> Generator[Session, None, None]:
-    session = DBSession()
+async def get_session() -> AsyncGenerator[AsyncSession, None]:
+    session = AsyncDBSession()
     try:
         yield session
     finally:
-        session.close()
+        await session.close()
 
 
 @pytest.fixture
@@ -54,7 +61,7 @@ def db_session() -> Generator[Session, None, None]:
 
 @pytest.fixture(autouse=True)
 def override_db_dependency(db_initialization) -> Generator[None, None, None]:
-    app.dependency_overrides[get_session] = get_session
+    app.dependency_overrides[get_session_original] = get_session
     yield
     app.dependency_overrides.clear()
     Base.metadata.drop_all(engine)

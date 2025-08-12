@@ -17,7 +17,7 @@ $ git clone git@github.com:Valentina-Gol/currency_viewer.git
 To run the project locally you need to set up a python virtual environment
 ```
 $ cd currency_viewer
-$ python -m venv currency_viewer_venv
+$ python3 -m venv currency_viewer_venv
 ```
 
 Activate the virtual environment

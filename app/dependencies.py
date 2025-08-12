@@ -3,12 +3,12 @@ from typing import AsyncGenerator
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models.database import SessionLocal
+from app.models.database import session_maker
 from app.repository.currency_repository import CurrencyRepository
 
 
 async def get_session() -> AsyncGenerator[AsyncSession, None]:
-    session = SessionLocal()
+    session = session_maker()
     try:
         yield session
     finally:

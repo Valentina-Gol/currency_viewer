@@ -28,7 +28,7 @@ async def create_currency_rates(
     repo: CurrencyRepository = Depends(get_currency_repository),
 ):
     request_date = datetime.strptime(currency.date, "%Y-%m-%d").date()
-    if repo.exists_for_date(request_date):
+    if await repo.exists_for_date(request_date):
         raise HTTPException(
             status_code=400, detail="Data for the specified dates already exists"
         )
@@ -47,7 +47,7 @@ async def create_currency_rates(
             Currency(code=entry["code"], rate=entry["rate"], date=request_date)
             for entry in currency_list_json
         ]
-        repo.add_multiple(currency_list)
+        await repo.add_multiple(currency_list)
     except Exception as err:
         raise HTTPException(
             status_code=500,
@@ -97,7 +97,7 @@ async def delete_currency_by_code(
     ):
         raise HTTPException(status_code=400, detail="Invalid currency code format")
 
-    deleted_count = repo.delete_by_code(currency_code)
+    deleted_count = await repo.delete_by_code(currency_code)
     if deleted_count == 0:
         raise HTTPException(status_code=404, detail="Currency code not found")
 
@@ -120,6 +120,6 @@ async def get_all_data(
     per_page: int = Query(10, ge=1, le=100, description="Number of items per page"),
     repo: CurrencyRepository = Depends(get_currency_repository),
 ):
-    total = repo.get_total_count()
-    items = repo.get_paginated(page, per_page)
+    total = await repo.get_total_count()
+    items = await repo.get_paginated(page, per_page)
     return {"page": page, "per_page": per_page, "total": total, "items": items}

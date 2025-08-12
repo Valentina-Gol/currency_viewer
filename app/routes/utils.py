@@ -13,7 +13,7 @@ async def fetch_currency_rates(date: str) -> str:
 def parse_cbr_xml(xml_text: str) -> list[dict[str, str | float]]:
     xml_info = xmltodict.parse(xml_text)
     if "Valute" not in xml_info["ValCurs"]:
-        raise ValueError(xml_info["ValCurs"])
+        raise ValueError(f"Invalid cbr data format. Recieved: {xml_info["ValCurs"]}")
 
     currency_data = []
     for currency_item in xml_info["ValCurs"]["Valute"]:
@@ -22,3 +22,5 @@ def parse_cbr_xml(xml_text: str) -> list[dict[str, str | float]]:
         rate_value = float(currency_item["Value"].replace(",", ".")) / nominal
         currency_data.append({"code": code, "rate": rate_value})
     return currency_data
+
+
